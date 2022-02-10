@@ -12,7 +12,7 @@ namespace Oxide.Plugins
 		private const int MediumBatteryMaxDefault = 50;
 		private const int SmallBatteryMaxDefault = 10;
 
-		private static ElectricityConfiguration _configData;		
+		private static ElectricityConfiguration _configData;
 
 		#region Configuration
 
