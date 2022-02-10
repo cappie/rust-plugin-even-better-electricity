@@ -4,7 +4,7 @@ using Oxide.Core.Plugins;
 
 namespace Oxide.Plugins
 {
-    [Info("Even Better Electricity", "cappie", "1.0.0")]
+    [Info("Even Better Electricity", "cappie", "1.0.4")]
     [Description("Allows even more control over electricity, including test generators!")]
 	public class EvenBetterElectricity : RustPlugin
 	{
@@ -12,7 +12,7 @@ namespace Oxide.Plugins
 		private const int MediumBatteryMaxDefault = 50;
 		private const int SmallBatteryMaxDefault = 10;
 
-		private static ElectricityConfiguration _configData;
+		private static ElectricityConfiguration _configData;		
 
 		#region Configuration
 
@@ -47,11 +47,8 @@ namespace Oxide.Plugins
 				LargeBatteryConfiguration = new LargeBatteryConfiguration();
 				MediumBatteryConfiguration = new MediumBatteryConfiguration();
 				SmallBatteryConfiguration = new SmallBatteryConfiguration();
-
 				WindmillConfiguration = new WindmillConfiguration();
-
 				SolarPanelConfiguration = new SolarPanelConfiguration();
-
 				SmallGeneratorConfiguration = new SmallGeneratorConfiguration();
 				ElectricGeneratorConfiguration = new ElectricGeneratorConfiguration();
 			}
@@ -209,6 +206,7 @@ namespace Oxide.Plugins
 			RevertWindmills();
 			RevertSmallGenerators();
 			RevertElectricGenerators();
+			EvenBetterElectricity._configData = null;
 		}
 
 		private void OnEntitySpawned(BaseNetworkable networkObject)
@@ -253,7 +251,7 @@ namespace Oxide.Plugins
 			lang.RegisterMessages(
 				new Dictionary<string, string>
 				{
-					["chatPrefix"] = "<size=16><b>Better Electricity</b></size> <size=10>by p0mp.com</size>\n",
+					["chatPrefix"] = "<size=16><b>Better Electricity</b></size>\n",
 					["configurationCreate"] = "Configuration file is corrupt (or doesn't exists), creating new one!",
 					["findBatteryAdjust"] = "Finding and adjusting all Batteries. (This may take some time)",
 					["findBatteryRevert"] = "Finding and reverting all Batteries. (This may take some time)",
@@ -285,19 +283,9 @@ namespace Oxide.Plugins
 
 		private void Reload()
 		{
-			RevertBatteries();
-			RevertElectricGenerators();
-			RevertWindmills();
-			RevertSmallGenerators();
-			RevertSolarPanels();
-
+			Unload();
 			LoadConfig();
-
-			ChangeBatteries();
-			ChangeElectricGenerators();
-			ChangeWindmills();
-			ChangeSmallGenerators();
-			ChangeSolarPanels();
+			OnServerInitialized();
 		}
 
 		#endregion
@@ -337,18 +325,18 @@ namespace Oxide.Plugins
 		private void ChangeSmallGenerators()
 		{
 			Puts(GetLang("findSmallGeneratorAdjust"));
-			foreach (var generator in UnityEngine.Object.FindObjectsOfType<FuelGenerator>())
+			foreach (var fuelgenerator in UnityEngine.Object.FindObjectsOfType<FuelGenerator>())
 			{
-				AdjustSmallGenerator(generator);
+				AdjustSmallGenerator(fuelgenerator);
 			}
 		}
 
 		private void ChangeElectricGenerators()
 		{
 			Puts(GetLang("findElectricGeneratorAdjust"));
-			foreach (var generator in UnityEngine.Object.FindObjectsOfType<ElectricGenerator>())
+			foreach (var electricgenerator in UnityEngine.Object.FindObjectsOfType<ElectricGenerator>())
 			{
-				AdjustElectricGenerator(generator);
+				AdjustElectricGenerator(electricgenerator);
 			}
 		}
 
